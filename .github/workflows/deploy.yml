@@ -21,7 +21,7 @@ jobs:
         runs-on: ubuntu-latest
         steps: 
             - uses: actions/checkout@v4
-            - run: sudo apt updtate
+            - run: sudo apt update
             - run: sudo apt install -y rsync
             - run: sudo apt install -y openssh-client
             - run: sudo apt install -y secure-delete
