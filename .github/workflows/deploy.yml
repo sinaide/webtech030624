@@ -28,7 +28,7 @@ jobs:
             - run: mkdir -p ~/.ssh
             - run: echo "${{secrets.SSH_PRIVATE_KEY}}" > ~/.ssh/id_rsa
             - run: chmod 600 ~/.ssh/id_rsa
-            - run: ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa ${{env.username}}@${{env.hostname}} sudo chown --recursive ${{env.username}} ${{env.destination}}"
+            - run: ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa ${{env.username}}@${{env.hostname}} sudo chown --recursive ${{env.username}} ${{env.destination}}
             - run: rsync -p --archive --verbose --compress --delete -e "ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa" ./ ${{env.username}}@${{env.hostname}}:${{env.destination}}
               continue-on-error: true
             - run: ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa ${{env.username}}@${{env.hostname}} sudo chown --recursive ${{env.username}} ${{env.destination}}"
