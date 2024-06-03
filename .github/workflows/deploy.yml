@@ -1,0 +1,35 @@
+name: Deploy automático para o servidor
+
+env:
+    hostname: 172.210.2.97
+    username: azureuser
+    destination: /var/www/html
+    target_username: root
+    target_group: root
+    #excluded_items_command: "--exclude .git --exclude .github --exclude .vscode"
+on:
+    push:
+        branches:
+            - main
+    pull_request:
+        branches:
+            - main
+        types:
+            - closed
+jobs:
+    deploy:
+        runs-on: ubuntu-latest
+        steps: 
+            - uses: actions/checkout@v4
+            - run: sudo apt updtate
+            - run: sudo apt install -y rsync
+            - run: sudo apt install -y openssh-client
+            - run: sudo apt install -y secure-delete
+            - run: mkdir -p ~/.ssh
+            - run: echo "${{secrets.SSH_PRIVATE_KEY}}" > ~/.ssh/id_rsa
+            - run: chmod 600 ~/.ssh/id_rsa
+            - run: ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa ${{env.username}}@${{env.hostname}} sudo chown --recursive ${{env.username}} ${{env.destination}}"
+            - run: rsync -p --archive --verbose --compress --delete -e "ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa" ./ ${{env.username}}@${{env.hostname}}:${{env.destination}}
+              continue-on-error: true
+            - run: ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa ${{env.username}}@${{env.hostname}} sudo chown --recursive ${{env.username}} ${{env.destination}}"
+            - run: srm ~/.ssh/id_rsa
